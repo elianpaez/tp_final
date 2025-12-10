@@ -1,0 +1,116 @@
+.orders-page {
+  background: #120c07;
+  min-height: 100vh;
+  padding: 120px 20px 60px;
+  color: #fff;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+}
+
+.orders-title {
+  text-align: center;
+  font-size: 40px;
+  font-weight: 800;
+  color: #d4a153;
+  margin-bottom: 30px;
+  text-shadow: 0 0 12px rgba(255,200,120,0.25);
+}
+
+.order-wrapper {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+}
+
+
+.order-card {
+  background: #1b120c;
+  border: 1px solid #3a2417;
+  padding: 18px;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.45);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.order-top {
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:12px;
+}
+
+.status-pill {
+  background: rgba(60,120,60,0.12);
+  color: #8ff0a1;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.order-id {
+  color: #d4a153;
+  font-weight: 800;
+  font-size: 18px;
+  margin-top: 8px;
+}
+
+.order-date {
+  color: #bba58c;
+  font-size: 13px;
+}
+
+
+.order-info-grid {
+  display:flex;
+  gap:22px;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.info-block {
+  flex:1;
+}
+
+.info-label { color:#cfc0ad; font-size:13px; margin:0; }
+.info-value { font-size:20px; font-weight:800; color:#8bff9b; margin-top:6px; }
+
+/* items */
+.order-items { margin-top:8px; border-top:1px solid #3a2417; padding-top:14px; }
+.items-list { list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:10px; }
+.item-row {
+  display:flex; justify-content:space-between; align-items:center;
+  background:#24170f; border:1px solid #3a2417; padding:12px; border-radius:10px;
+}
+.item-left { display:flex; flex-direction:column; gap:6px; }
+.item-name { font-weight:700; color:#fff; }
+.item-options { color:#e4b86a; font-size:12px; }
+.item-price { font-weight:900; color:#f5d28a; }
+
+
+.order-footer { margin-top:12px; border-top:1px solid #3a2417; padding-top:12px; color:#c8b9a6; font-size:13px; }
+
+
+.order-actions { display:flex; gap:10px; align-items:center; justify-content:flex-end; margin-top:8px; }
+.btn {
+  background:#d4a153;
+  color:#1a1208;
+  border:none;
+  padding:8px 14px;
+  border-radius:8px;
+  font-weight:700;
+  cursor:pointer;
+}
+.btn.secondary {
+  background:transparent;
+  border:1px solid #d4a153;
+  color:#d4a153;
+}
+
+/* responsive */
+@media (min-width:900px) {
+  .order-wrapper { grid-template-columns: 1fr; }
+}
