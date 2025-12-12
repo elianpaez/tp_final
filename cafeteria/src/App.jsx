@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer'; 
@@ -14,44 +14,48 @@ import { Orders } from './pages/Orders';
 import { CartProvider } from './context/CartContext'; 
 import { AuthProvider } from './context/AuthContext'; 
 
-import Admin from "./pages/Admin.jsx";
-import AddProduct from "./pages/AddProduct.jsx";
+import { uploadProductsOnce } from "./utils/uploadProducts";
 
-import ListarProductos from "./pages/ListarProductos";
-import EditarProducto from "./pages/EditarProducto";
+import AdminDashboard from "./Dashboard.jsx";
+
+import PaymentSuccess from './pages/PaymentSuccess.jsx';
 
 function App() {
-  return (
-    <div className="App">
-      <AuthProvider>
-        <CartProvider>
-          
-          <Navbar />
-          
-          <div style={{ height: '100px', transparent: 'true' }}>
-          </div>
 
-          <div style={{ flex: 1, }}>
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/menu" element={<Menu />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/checkout" element={<Checkout />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/orders" element={<Orders />} />
-              <Route path="*" element={<h1>404 - Página No Encontrada</h1>} />
-              <Route path="/admin" element={<Admin />} />
-              <Route path="/admin/agregar-producto" element={<AddProduct />} />
-              <Route path="/admin/listar-productos" element={<ListarProductos />} />
-              <Route path="/admin/editar-producto/:id" element={<EditarProducto />} />
-            </Routes>
-          </div>
-          <Footer />
-        </CartProvider>
-      </AuthProvider>
-    </div>
-  );
+    useEffect(() => {
+        uploadProductsOnce();
+    }, []);
+
+    return (
+        <div className="App">
+            <AuthProvider>
+                <CartProvider>
+                    
+                    <Navbar />
+
+                    <div style={{ height: '100px' }}></div>
+
+                    <div style={{ flex: 1 }}>
+                        <Routes>
+                            <Route path="/" element={<Home />} />
+                            <Route path="/menu" element={<Menu />} />
+                            <Route path="/login" element={<Login />} />
+                            <Route path="/register" element={<Register />} />
+                            <Route path="/checkout" element={<Checkout />} />
+                            <Route path="/profile" element={<Profile />} />
+                            <Route path="/orders" element={<Orders />} />
+                            <Route path="/payment-success" element={<PaymentSuccess />} />
+                            <Route path="/admin" element={<AdminDashboard />} />
+                            <Route path="/admin/dashboard" element={<AdminDashboard />} />
+                            <Route path="*" element={<h1>404 - Página No Encontrada</h1>} />
+                        </Routes>
+                    </div>
+
+                    <Footer />
+                </CartProvider>
+            </AuthProvider>
+        </div>
+    );
 }
 
 export default App;

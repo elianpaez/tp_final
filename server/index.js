@@ -7,6 +7,7 @@ import PDFDocument from "pdfkit";
 import { Buffer } from "buffer";
 import path from "path";
 import { fileURLToPath } from "url";
+import { MercadoPagoConfig, Preference } from 'mercadopago';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -17,6 +18,11 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+
+const mpClient = new MercadoPagoConfig({ 
+    accessToken: process.env.MERCADOPAGO_ACCESS_TOKEN 
+});
+const mpPreference = new Preference(mpClient);
 
 app.use(cors({ origin: "http://localhost:5173" }));
 app.use(express.json({ limit: "10mb" }));
@@ -41,6 +47,56 @@ app.post("/api/create-payment-intent", async (req, res) => {
   } catch (error) {
     res.status(500).send({ error: error.message });
   }
+});
+
+app.post("/api/create-mercadopago-preference", async (req, res) => {
+    const { items, metadata } = req.body;
+    
+    if (!items || items.length === 0) {
+        return res.status(400).send({ error: "El carrito está vacío." });
+    }
+
+    try {
+        const preferenceItems = items.map(item => ({
+            title: String(item.title || item.name || 'Producto de Cafetería'),
+            unit_price: Number(item.price) || 1, 
+            quantity: Number(item.quantity) || 1,
+            currency_id: 'ARS', 
+        })).filter(item => item.unit_price > 0 && item.quantity > 0); 
+
+        if (preferenceItems.length === 0) {
+             return res.status(400).send({ error: "Los items del carrito no tienen precios válidos." });
+        }
+
+
+        const preferenceBody = {
+            items: preferenceItems,
+            
+            back_urls: {
+                success: 'http://localhost:5173/payment-success?source=mp', 
+                failure: 'http://localhost:5173/checkout?status=failure&source=mp',
+                pending: 'http://localhost:5173/checkout?status=pending&source=mp',
+            },
+            //auto_return: 'approved', 
+            
+            notification_url: process.env.MERCADOPAGO_WEBHOOK_URL, 
+            metadata: {
+                ...metadata,
+                timestamp: new Date().toISOString()
+            }
+        };
+
+        const preferenceResult = await mpPreference.create({ body: preferenceBody });
+
+        res.json({
+            preferenceId: preferenceResult.id,
+            redirectUrl: preferenceResult.init_point
+        });
+
+    } catch (error) {
+        console.error("Error al crear preferencia de Mercado Pago:", error);
+        res.status(500).send({ error: "Error interno al procesar el pago con Mercado Pago. Verifique el token y la consola del servidor." });
+    }
 });
 
 app.post("/api/send-invoice", async (req, res) => {
